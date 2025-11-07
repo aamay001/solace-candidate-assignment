@@ -1,13 +1,14 @@
 const { drizzle } = require("drizzle-orm/postgres-js");
 const { migrate } = require("drizzle-orm/postgres-js/migrator");
 const postgres = require("postgres");
+const settings = require("../config/settings");
 
 const runMigration = async () => {
-  if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is not set");
+  if (!settings.database.url) throw new Error("DATABASE_URL is not set");
 
-  console.log(process.env.DATABASE_URL);
+  console.log(settings.database.url);
 
-  const sql = postgres(process.env.DATABASE_URL, { max: 1 });
+  const sql = postgres(settings.database.url, { max: 1 });
   const db = drizzle(sql);
   await migrate(db, { migrationsFolder: "drizzle" });
   await sql.end();
